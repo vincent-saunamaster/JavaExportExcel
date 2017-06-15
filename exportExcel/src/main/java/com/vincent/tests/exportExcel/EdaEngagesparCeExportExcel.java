@@ -4,6 +4,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -28,9 +36,9 @@ public class EdaEngagesparCeExportExcel {
 	/**
 	 * méthode créant le fichier excel de l'écran EDA Engagés par CE
 	 */
-	public void ExportExcel() {
+	public void exportExcel() {
 		// numéros des lignes et colonnes
-		short rownum = 0, colnum = 0, initialrownum;
+		short rownum = 0, colnum = 0, initialcolnum = 0, initialrownum;
 		// new workbook
 		Workbook wb = new XSSFWorkbook();
 		// new sheet avec nom passé à l'utilitaire safeName
@@ -58,7 +66,7 @@ public class EdaEngagesparCeExportExcel {
 		titreFont.setColor(IndexedColors.WHITE.getIndex());
 		titreStyle.setFont(titreFont);
 		titreStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
-		titreStyle.setFillPattern( CellStyle.SOLID_FOREGROUND);
+		titreStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 		titreStyle.setAlignment(CellStyle.ALIGN_CENTER);
 		// LocalDateTime.now().plusDays(1);
 		String titre = "EDA engagés le " + LocalDateTime.now().getDayOfMonth() + "/"
@@ -77,9 +85,7 @@ public class EdaEngagesparCeExportExcel {
 		CellStyle tabCeStyle = wb.createCellStyle();
 		CellStyle tabDataStyle = wb.createCellStyle();
 		CellStyle tabDataDroitStyle = wb.createCellStyle();
-		CellStyle tabBasCEStyle = wb.createCellStyle();
-		CellStyle tabBasDataStyle = wb.createCellStyle();
-		CellStyle tabBasDroitStyle = wb.createCellStyle();
+		CellStyle tabBasStyle = wb.createCellStyle();
 
 		Font tabCeFont = wb.createFont();
 		Font tabThFont = wb.createFont();
@@ -139,31 +145,124 @@ public class EdaEngagesparCeExportExcel {
 		tabDataDroitStyle.setBorderRight(CellStyle.BORDER_THIN);
 		tabDataDroitStyle.setRightBorderColor(IndexedColors.BROWN.getIndex());
 
-		tabBasCEStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		tabBasCEStyle.setLeftBorderColor(IndexedColors.BROWN.getIndex());
-		tabBasCEStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		tabBasCEStyle.setBottomBorderColor(IndexedColors.BROWN.getIndex());
-
-		tabBasDataStyle.setFont(tabDataFont);
-		tabBasDataStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
-		tabBasDataStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		tabBasDataStyle.setAlignment(CellStyle.ALIGN_CENTER);
-		tabBasDataStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		tabBasDataStyle.setBottomBorderColor(IndexedColors.BROWN.getIndex());
-
-		tabBasDroitStyle.setFont(tabDataFont);
-		tabBasDroitStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
-		tabBasDroitStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		tabBasDroitStyle.setAlignment(CellStyle.ALIGN_CENTER);
-		tabBasDroitStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		tabBasDroitStyle.setBottomBorderColor(IndexedColors.BROWN.getIndex());
-		tabBasDroitStyle.setBorderRight(CellStyle.BORDER_THIN);
-		tabBasDroitStyle.setRightBorderColor(IndexedColors.BROWN.getIndex());
+		tabBasStyle.setBorderTop(CellStyle.BORDER_THIN);
+		tabBasStyle.setTopBorderColor(IndexedColors.BROWN.getIndex());
 
 		// data
-		initialrownum = rownum;
-		Row rowTab = sheet.createRow(rownum++);
+		//
+		// à reproduire
+		// $scope.listeJbyCE = _.groupBy(_.sortBy(_.sortBy(response.data,
+		// 'libEda'), 'libCE'), 'libCE');
 
+		// création données
+		class ObjetTest {
+			String ce;
+			String eda;
+			String dmo;
+			String puissance;
+			String ro;
+			String telPrinc;
+			String telSecours;
+
+			public String getCe() {
+				return ce;
+			}
+
+			public void setCe(String ce) {
+				this.ce = ce;
+			}
+
+			public String getEda() {
+				return eda;
+			}
+
+			public void setEda(String eda) {
+				this.eda = eda;
+			}
+
+			public String getDmo() {
+				return dmo;
+			}
+
+			public void setDmo(String dmo) {
+				this.dmo = dmo;
+			}
+
+			public String getPuissance() {
+				return puissance;
+			}
+
+			public void setPuissance(String puissance) {
+				this.puissance = puissance;
+			}
+
+			public String getRo() {
+				return ro;
+			}
+
+			public void setRo(String ro) {
+				this.ro = ro;
+			}
+
+			public String getTelPrinc() {
+				return telPrinc;
+			}
+
+			public void setTelPrinc(String telPrinc) {
+				this.telPrinc = telPrinc;
+			}
+
+			public String getTelSecours() {
+				return telSecours;
+			}
+
+			public void setTelSecours(String telSecours) {
+				this.telSecours = telSecours;
+			}
+
+		}
+		ObjetTest a = new ObjetTest();
+		a.setCe("ceA");
+		a.setEda("edad");
+		a.setDmo("dmo1");
+		a.setPuissance("puissance1");
+		a.setRo("ro1");
+		a.setTelPrinc("telPrinc1");
+		a.setTelSecours("telSecours1");
+		ObjetTest b = new ObjetTest();
+		b.setCe("ceA");
+		b.setEda("edaf");
+		b.setDmo("dmo2");
+		b.setPuissance("puissance2");
+		b.setRo("ro2");
+		b.setTelPrinc("telPrinc2");
+		b.setTelSecours("telSecours2");
+		ObjetTest c = new ObjetTest();
+		c.setCe("ceB");
+		c.setEda("edae");
+		c.setDmo("dmo3");
+		c.setPuissance("puissance3");
+		c.setRo("ro3");
+		c.setTelPrinc("telPrinc3");
+		c.setTelSecours("telSecours3");
+
+		List<ObjetTest> listTest = new ArrayList<>();
+		listTest.add(c);
+		listTest.add(b);
+		listTest.add(a);
+
+		// sort et groupBy
+		listTest.sort(Comparator.comparing(ObjetTest::getEda));
+		Map<String, List<ObjetTest>> MapgroupByCeUnSorted = listTest.stream().collect(Collectors.groupingBy(ObjetTest::getCe));
+		Map<String, List<ObjetTest>> MapgroupByCeSort = MapgroupByCeUnSorted.entrySet().stream()
+				.sorted(Map.Entry.comparingByKey()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+						(oldValue, newvalue) -> oldValue, LinkedHashMap::new));
+
+		// valeurs pour le parcours des tableaux
+		initialrownum = rownum;
+		Row rowTab;
+
+		// nom des Th
 		String CE = "CE";
 		String thEda = "EDA";
 		String thDmo = "DMO";
@@ -172,47 +271,45 @@ public class EdaEngagesparCeExportExcel {
 		String thTelPrinc = "N° téléphone principal";
 		String thTelSec = "N° téléphone secours";
 
-		createCell(createHelper, rowTab, colnum++, CE, tabHautCeStyle);
-		createCell(createHelper, rowTab, colnum++, thEda, tabHautStyle);
-		createCell(createHelper, rowTab, colnum++, thDmo, tabHautStyle);
-		createCell(createHelper, rowTab, colnum++, thPuissance, tabHautStyle);
-		createCell(createHelper, rowTab, colnum++, thRo, tabHautStyle);
-		createCell(createHelper, rowTab, colnum++, thTelPrinc, tabHautStyle);
-		createCell(createHelper, rowTab, colnum++, thTelSec, tabHautDroitStyle);
-		colnum = 0;
+		for (Map.Entry<String, List<ObjetTest>> entry : MapgroupByCeSort.entrySet()) {
+			rowTab = sheet.createRow(rownum++);
+			createCell(createHelper, rowTab, colnum++, entry.getKey(), tabHautCeStyle);
+			createCell(createHelper, rowTab, colnum++, thEda, tabHautStyle);
+			createCell(createHelper, rowTab, colnum++, thDmo, tabHautStyle);
+			createCell(createHelper, rowTab, colnum++, thPuissance, tabHautStyle);
+			createCell(createHelper, rowTab, colnum++, thRo, tabHautStyle);
+			createCell(createHelper, rowTab, colnum++, thTelPrinc, tabHautStyle);
+			createCell(createHelper, rowTab, colnum++, thTelSec, tabHautDroitStyle);
+			colnum = initialcolnum;
 
-		String DataEda = "AAA";
-		Double DataDmo = 9.0;
-		Double DataPuissance = 1783.0;
-		String DataRo = "RO_1";
-		String DataTelPrinc = "08 00 00 00 00";
-		String DataTelSec = "09 00 00 00 00";
+			for (ObjetTest o : entry.getValue()) {
+				rowTab = sheet.createRow(rownum++);
+				createCell(createHelper, rowTab, colnum++, "", tabCeStyle);
+				createCell(createHelper, rowTab, colnum++, o.getEda(), tabDataStyle);
+				createCell(createHelper, rowTab, colnum++, o.getDmo(), tabDataStyle);
+				createCell(createHelper, rowTab, colnum++, o.getPuissance(), tabDataStyle);
+				createCell(createHelper, rowTab, colnum++, o.getRo(), tabDataStyle);
+				createCell(createHelper, rowTab, colnum++, o.getTelPrinc(), tabDataStyle);
+				createCell(createHelper, rowTab, colnum++, o.getTelSecours(), tabDataDroitStyle);
+				colnum = initialcolnum;
+			}
+			// merge colone CE
+			sheet.addMergedRegion(new CellRangeAddress(initialrownum, rownum - 1, colnum, colnum));
 
-		rowTab = sheet.createRow(rownum++);
-		createCell(createHelper, rowTab, colnum++, "", tabCeStyle);
-		createCell(createHelper, rowTab, colnum++, DataEda, tabDataStyle);
-		createCell(createHelper, rowTab, colnum++, DataDmo, tabDataStyle);
-		createCell(createHelper, rowTab, colnum++, DataPuissance, tabDataStyle);
-		createCell(createHelper, rowTab, colnum++, DataRo, tabDataStyle);
-		createCell(createHelper, rowTab, colnum++, DataTelPrinc, tabDataStyle);
-		createCell(createHelper, rowTab, colnum++, DataTelSec, tabDataDroitStyle);
-		colnum = 0;
+			rowTab = sheet.createRow(rownum++);
+			createCell(createHelper, rowTab, colnum++, "", tabBasStyle);
+			createCell(createHelper, rowTab, colnum++, "", tabBasStyle);
+			createCell(createHelper, rowTab, colnum++, "", tabBasStyle);
+			createCell(createHelper, rowTab, colnum++, "", tabBasStyle);
+			createCell(createHelper, rowTab, colnum++, "", tabBasStyle);
+			createCell(createHelper, rowTab, colnum++, "", tabBasStyle);
+			createCell(createHelper, rowTab, colnum++, "", tabBasStyle);
+			colnum = initialcolnum;
 
-		rowTab = sheet.createRow(rownum);
-		createCell(createHelper, rowTab, colnum++, "", tabBasCEStyle);
-		createCell(createHelper, rowTab, colnum++, DataEda, tabBasDataStyle);
-		createCell(createHelper, rowTab, colnum++, DataDmo, tabBasDataStyle);
-		createCell(createHelper, rowTab, colnum++, DataPuissance, tabBasDataStyle);
-		createCell(createHelper, rowTab, colnum++, DataRo, tabBasDataStyle);
-		createCell(createHelper, rowTab, colnum++, DataTelPrinc, tabBasDataStyle);
-		createCell(createHelper, rowTab, colnum++, DataTelSec, tabBasDroitStyle);
-		colnum = 0;
+			sheet.addMergedRegion(new CellRangeAddress(rownum - 1, rownum - 1, colnum, colnum + 6));
+			initialrownum = rownum;
 
-		sheet.addMergedRegion(new CellRangeAddress(initialrownum, rownum, colnum, colnum));
-		rownum++;
-		sheet.addMergedRegion(new CellRangeAddress(rownum, rownum, colnum, colnum + 6));
-		rownum++;
-		initialrownum = rownum;
+		}
 
 		// enregisterment du workbook
 		try {
@@ -247,6 +344,7 @@ public class EdaEngagesparCeExportExcel {
 		cell.setCellValue(createHelper.createRichTextString(valeur));
 		cell.setCellStyle(cellStyle);
 	}
+
 	private static void createCell(CreationHelper createHelper, Row row, short column, Double valeur,
 			CellStyle cellStyle) {
 		Cell cell = row.createCell(column);

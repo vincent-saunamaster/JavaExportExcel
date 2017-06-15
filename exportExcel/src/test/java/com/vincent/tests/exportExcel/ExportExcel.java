@@ -9,7 +9,7 @@ public class ExportExcel {
 	
 	@Test
 	public void test() {
-		ee.ExportExcel();
+		ee.exportExcel();
 	}
 
 }
